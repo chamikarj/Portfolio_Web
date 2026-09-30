@@ -1,0 +1,12 @@
+{
+  "name": "chamika-rj-portfolio",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Chamika rj portfolio for GitHub and Vercel, with verified messages and YouTube updates.",
+  "type": "module",
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env local-server.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}
