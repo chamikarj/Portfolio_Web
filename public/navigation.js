@@ -46,6 +46,7 @@
   droplet.setAttribute('aria-hidden', 'true');
   nav.prepend(droplet);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const compactLayout = matchMedia('(max-width: 940px)');
   let activeLink = null;
   let pending = false;
   let positioned = false;
@@ -74,6 +75,17 @@
     nav.style.setProperty('--active-background-alpha', (.08 * progress).toFixed(3));
     nav.style.setProperty('--active-shadow-alpha', (.28 * progress).toFixed(3));
     nav.style.setProperty('--dock-gutter', `${(8 * progress).toFixed(2)}px`);
+
+    // On phones the logo and Connect stay on the first row of the same dock.
+    // Keep all four section links visible instead of squeezing them into a scroller.
+    if (compactLayout.matches) {
+      if (brand) brand.style.removeProperty('transform');
+      if (brandSlot) brandSlot.style.setProperty('--brand-slot-width', '0px');
+      dockSlot.style.setProperty('--slot-width', '0px');
+      heroLink.style.removeProperty('transform');
+      if (activeLink && activeLink !== dockLink) positionDroplet(activeLink, false);
+      return;
+    }
 
     if (brandAnchor && brandSlot) {
       const brandStart = brandAnchor.getBoundingClientRect();
@@ -174,6 +186,8 @@
     const connectIsActive = current === dockLink;
     if (changed && heroLink) {
       heroLink.classList.toggle('connect-active', connectIsActive);
+      if (connectIsActive) heroLink.setAttribute('aria-current', 'location');
+      else heroLink.removeAttribute('aria-current');
       heroLink.classList.remove('connect-arrival');
       if (connectIsActive && !reducedMotion.matches) {
         void heroLink.offsetWidth;
@@ -187,7 +201,7 @@
       droplet.style.removeProperty('opacity');
       positionDroplet(current, changed);
     }
-    if (changed && nav.scrollWidth > nav.clientWidth) {
+    if (changed && !compactLayout.matches && nav.scrollWidth > nav.clientWidth + 2) {
       const navBox = nav.getBoundingClientRect();
       const linkBox = current.getBoundingClientRect();
       nav.scrollTo({ left: nav.scrollLeft + linkBox.left + linkBox.width / 2 - navBox.left - navBox.width / 2, behavior: 'smooth' });

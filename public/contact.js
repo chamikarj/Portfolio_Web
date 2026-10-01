@@ -9,6 +9,9 @@
   let sending = false;
   let token = '';
   let widgetId = null;
+  let widgetSize = null;
+  let widgetObserver = null;
+  let renderWidget = () => {};
   const syncButton = () => { button.disabled = sending || !token; };
   const clearVerification = (message = 'Complete the human verification to send your message.') => {
     token = '';
@@ -25,12 +28,19 @@
     const script = document.createElement('script');
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
     script.async = true;
-    script.onload = () => {
+    renderWidget = () => {
       try {
+        const size = widget.clientWidth < 300 ? 'compact' : 'flexible';
+        if (sending || (widgetId !== null && size === widgetSize)) return;
+        if (widgetId !== null) {
+          clearVerification();
+          window.turnstile.remove(widgetId);
+        }
+        widgetSize = size;
         widgetId = window.turnstile.render(widget, {
           sitekey,
           theme: 'dark',
-          size: 'flexible',
+          size,
           action: 'contact_message',
           callback: verifiedToken => {
             token = verifiedToken;
@@ -43,6 +53,13 @@
         });
       } catch {
         clearVerification('Verification is unavailable. Please refresh the page and try again.');
+      }
+    };
+    script.onload = () => {
+      renderWidget();
+      if ('ResizeObserver' in window) {
+        widgetObserver = new ResizeObserver(renderWidget);
+        widgetObserver.observe(widget);
       }
     };
     script.onerror = () => clearVerification('Verification could not load. Please refresh the page and try again.');
@@ -85,6 +102,7 @@
     } finally {
       sending = false;
       resetVerification();
+      renderWidget();
     }
   });
 })();

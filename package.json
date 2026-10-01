@@ -1,6 +1,6 @@
 {
   "name": "chamika-rj-portfolio",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Chamika rj portfolio for GitHub and Vercel, with verified messages and YouTube updates.",
   "type": "module",
