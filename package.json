@@ -1,12 +1,25 @@
 {
   "name": "chamika-rj-portfolio",
-  "version": "1.1.1",
+  "version": "2026.10.26",
   "private": true,
-  "description": "Chamika rj portfolio for GitHub and Vercel, with verified messages and YouTube updates.",
   "type": "module",
-  "engines": { "node": "24.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env local-server.mjs",
-    "test": "node --test test/*.test.mjs"
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "dev": "node local-server.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "three": "0.186.1",
+    "@react-three/fiber": "9.8.2",
+    "@react-three/drei": "10.7.9"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.0"
   }
 }

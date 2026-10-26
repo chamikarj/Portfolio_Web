@@ -1,0 +1,203 @@
+{
+  "source": "Notion academic dashboard",
+  "gpa": 3.25,
+  "credits": 90,
+  "courses": [
+    {
+      "Course": "Basic Concepts of IT",
+      "Stage": "First Year",
+      "Code": "IT1301",
+      "Credits": 3,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Using Application Software for Office Work",
+      "Stage": "First Year",
+      "Code": "IT1302",
+      "Credits": 3,
+      "Grade": "A+"
+    },
+    {
+      "Course": "E-business & Entrepreneurship",
+      "Stage": "First Year",
+      "Code": "IT1303",
+      "Credits": 3,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Mathematics for IT",
+      "Stage": "First Year",
+      "Code": "IT1304",
+      "Credits": 3,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Future Trends & Embedded System Development",
+      "Stage": "First Year",
+      "Code": "IT1405",
+      "Credits": 4,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Digital Project Management",
+      "Stage": "First Year",
+      "Code": "IT1406",
+      "Credits": 4,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Computer Program Design & Programming",
+      "Stage": "First Year",
+      "Code": "IT1507",
+      "Credits": 5,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Introduction to Web Application Development",
+      "Stage": "First Year",
+      "Code": "IT1508",
+      "Credits": 5,
+      "Grade": "A+"
+    },
+    {
+      "Course": "Data Structure and Algorithm",
+      "Stage": "Second Year",
+      "Code": "2301",
+      "Credits": 3,
+      "Grade": "B-"
+    },
+    {
+      "Course": "Database System",
+      "Stage": "Second Year",
+      "Code": "2302",
+      "Credits": 3,
+      "Grade": "C"
+    },
+    {
+      "Course": "Multimedia Technology",
+      "Stage": "Second Year",
+      "Code": "2303",
+      "Credits": 3,
+      "Grade": "B"
+    },
+    {
+      "Course": "Mathematic and Static for Computing",
+      "Stage": "Second Year",
+      "Code": "2304",
+      "Credits": 3,
+      "Grade": "C+"
+    },
+    {
+      "Course": "Communication Skills",
+      "Stage": "Second Year",
+      "Code": "2305",
+      "Credits": 3,
+      "Grade": "B"
+    },
+    {
+      "Course": "Object Oriented Programming",
+      "Stage": "Second Year",
+      "Code": "2306",
+      "Credits": 3,
+      "Grade": "C"
+    },
+    {
+      "Course": "Software Engineering",
+      "Stage": "Second Year",
+      "Code": "2307",
+      "Credits": 3,
+      "Grade": "C-"
+    },
+    {
+      "Course": "Data Communication Networking",
+      "Stage": "Second Year",
+      "Code": "2308",
+      "Credits": 3,
+      "Grade": "B"
+    },
+    {
+      "Course": "Information Security",
+      "Stage": "Second Year",
+      "Code": "2309",
+      "Credits": 3,
+      "Grade": "B"
+    },
+    {
+      "Course": "Professional Practice and Ethics",
+      "Stage": "Second Year",
+      "Code": "2310",
+      "Credits": 3,
+      "Grade": "B-"
+    },
+    {
+      "Course": "Web Technology",
+      "Stage": "Third Year",
+      "Code": "3301",
+      "Credits": 3,
+      "Grade": "A-"
+    },
+    {
+      "Course": "Internet of Things",
+      "Stage": "Third Year",
+      "Code": "3302",
+      "Credits": 3,
+      "Grade": "B-"
+    },
+    {
+      "Course": "E Business",
+      "Stage": "Third Year",
+      "Code": "3303",
+      "Credits": 3,
+      "Grade": "B-"
+    },
+    {
+      "Course": "Security Tools",
+      "Stage": "Third Year",
+      "Code": "3304",
+      "Credits": 3,
+      "Grade": "A"
+    },
+    {
+      "Course": "Security Management",
+      "Stage": "Third Year",
+      "Code": "3305",
+      "Credits": 3,
+      "Grade": "A"
+    },
+    {
+      "Course": "IT Project",
+      "Stage": "Third Year",
+      "Code": "3306",
+      "Credits": 3,
+      "Grade": "B+"
+    },
+    {
+      "Course": "Project Management",
+      "Stage": "Third Year",
+      "Code": "3307",
+      "Credits": 3,
+      "Grade": "A-"
+    },
+    {
+      "Course": "Entrepreneurship",
+      "Stage": "Third Year",
+      "Code": "3308",
+      "Credits": 3,
+      "Grade": "A-"
+    },
+    {
+      "Course": "Network Security",
+      "Stage": "Third Year",
+      "Code": "3309",
+      "Credits": 3,
+      "Grade": "C+"
+    },
+    {
+      "Course": "Cyber Forensics",
+      "Stage": "Third Year",
+      "Code": "3310",
+      "Credits": 3,
+      "Grade": "C"
+    }
+  ]
+}

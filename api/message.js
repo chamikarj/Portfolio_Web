@@ -1,54 +1,85 @@
-import { POST } from '../lib/message.mjs';
-
-const maxBytes = 6000;
-const error = (message, status, extraHeaders = {}) => Response.json({ status: 'error', message }, {
-  status, headers: { 'Cache-Control': 'private, no-store', ...extraHeaders },
-});
-
-export function createMessageHandler({
-  getSecretKey = () => process.env.TURNSTILE_SECRET_KEY || '',
-  fetchImpl = globalThis.fetch,
-} = {}) {
-  return async function message(request) {
-    if (request.method !== 'POST') return error('Use POST for this endpoint.', 405, { Allow: 'POST' });
-    if (request.headers.get('origin') !== new URL(request.url).origin) {
-      return error('Please use the contact form on this site.', 403);
+// src/app/api/message/route.ts
+var formResponseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdkFOkY9ZJxecKDsEwKtx6etwk7qfvrall_nb6pefGxyCmdeQ/formResponse";
+var headers = { "Cache-Control": "private, no-store" };
+var error = (message, status) => Response.json({ status: "error", message }, { status, headers });
+async function POST(request) {
+  if (request.headers.get("origin") !== new URL(request.url).origin) {
+    return error("Please use the contact form on this site.", 403);
+  }
+  if (!request.headers.get("content-type")?.startsWith("application/json")) {
+    return error("Please check the form and try again.", 415);
+  }
+  if (Number(request.headers.get("content-length") || 0) > 6e3) {
+    return error("Your message is too long.", 413);
+  }
+  let data;
+  try {
+    data = await request.json();
+  } catch {
+    return error("Please check the form and try again.", 400);
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return error("Please check the form and try again.", 400);
+  }
+  const fields = data;
+  const name = typeof fields.name === "string" ? fields.name.trim() : "";
+  const email = typeof fields.email === "string" ? fields.email.trim() : "";
+  const message = typeof fields.message === "string" ? fields.message.trim() : "";
+  const turnstileToken = typeof fields.turnstileToken === "string" ? fields.turnstileToken : "";
+  if (!name || name.length > 80 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 120 || message.length < 10 || message.length > 2e3) {
+    return error("Please enter your name, a valid email, and a message of at least 10 characters.", 400);
+  }
+  if (!turnstileToken || turnstileToken.length > 2048) {
+    return error("Please complete the human verification and try again.", 403);
+  }
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) {
+    return error("Message verification is temporarily unavailable. Please try again later.", 503);
+  }
+  try {
+    const verification = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret, response: turnstileToken }),
+      signal: AbortSignal.timeout(8e3)
+    });
+    if (!verification.ok) throw new Error("Turnstile validation unavailable");
+    const result = await verification.json();
+    if (!result.success || result.action !== "contact_message" || result.hostname !== new URL(request.url).hostname) {
+      return error("Human verification expired or failed. Please complete it again.", 403);
     }
-    if (!request.headers.get('content-type')?.startsWith('application/json')) {
-      return error('Please check the form and try again.', 415);
+  } catch {
+    return error("We couldn't verify your message. Please try again later.", 502);
+  }
+  try {
+    const upstream = await fetch(formResponseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: new URLSearchParams({
+        "entry.574980307": name,
+        "entry.1334678765": email,
+        "entry.1588902554": message,
+        fvv: "1",
+        pageHistory: "0"
+      }),
+      redirect: "follow",
+      signal: AbortSignal.timeout(2e4)
+    });
+    const responsePage = await upstream.text();
+    if (!upstream.ok || !responsePage.includes("Your response has been recorded")) {
+      return error("The form did not confirm your message. Please try again later or email Chamika.", 502);
     }
-    if (Number(request.headers.get('content-length') || 0) > maxBytes) {
-      return error('Your message is too long.', 413);
-    }
-
-    const chunks = [];
-    let size = 0;
-    try {
-      if (request.body) {
-        const reader = request.body.getReader();
-        try {
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            size += value.byteLength;
-            if (size > maxBytes) {
-              await reader.cancel();
-              return error('Your message is too long.', 413);
-            }
-            chunks.push(Buffer.from(value));
-          }
-        } finally { reader.releaseLock(); }
-      }
-    } catch {
-      return error('Please check the form and try again.', 400);
-    }
-    const body = Buffer.concat(chunks);
-    const headers = new Headers(request.headers);
-    headers.set('content-length', String(body.byteLength));
-    headers.delete('transfer-encoding');
-    const boundedRequest = new Request(request.url, { method: 'POST', headers, body });
-    return POST(boundedRequest, { secretKey: getSecretKey(), fetchImpl });
-  };
+    return Response.json({ status: "sent" }, { headers });
+  } catch {
+    return error("We couldn't confirm delivery. Please email Chamika if this is urgent; avoid resending immediately.", 502);
+  }
 }
 
-export default { fetch: createMessageHandler() };
+// src/message-entry.ts
+var message_entry_default = { fetch(request) {
+  if (request.method !== "POST") return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
+  return POST(request);
+} };
+export {
+  message_entry_default as default
+};

@@ -1,0 +1,21 @@
+.about-art { position: relative; isolation: isolate; }
+.about-art img { display: block; width: 100%; height: auto; }
+.about-art.is-prepared:not(.is-visible) { opacity: 0; transform: translateY(18px) scale(.98); }
+.about-art.is-visible { animation: portrait-reveal .7s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes portrait-reveal {
+  from { opacity: 0; transform: translateY(18px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-art.is-prepared:not(.is-visible), .about-art.is-visible { opacity: 1; transform: none; animation: none; }
+}
+
+.contact-orbit { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 52% 52%, rgba(118, 184, 255, .1), transparent 68%); }
+.contact-orbit::before, .contact-orbit::after { content: ""; position: absolute; left: 52%; top: 52%; border: 1px solid rgba(177, 219, 255, .17); border-radius: 50%; box-shadow: 0 0 20px rgba(112, 174, 253, .07), inset 0 0 15px rgba(169, 131, 255, .05); }
+.contact-orbit::before { width: 90%; height: 78%; transform: translate(-50%, -50%) rotate(-10deg); }
+.contact-orbit::after { width: 60%; height: 54%; transform: translate(-50%, -50%) rotate(14deg); border-color: rgba(183, 159, 255, .16); }
+.contact-orbit-logo { position: absolute; top: 0; left: 0; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgba(210, 238, 255, .27); border-radius: 13px; background: rgba(9, 20, 42, .72); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .13), 0 7px 22px rgba(5, 10, 27, .3), 0 0 17px var(--logo-glow); will-change: transform, opacity; }
+.contact-orbit-logo img { position: absolute; width: 27px; height: 27px; object-fit: contain; opacity: 0; transition: opacity .3s; }
+.contact-orbit-logo.has-icon img { opacity: 1; }
+.contact-orbit-mark { color: var(--logo-color); font: 800 .72rem/1 Consolas, "Liberation Mono", "Courier New", monospace; letter-spacing: -.04em; transition: opacity .3s; }
+.contact-orbit-logo.has-icon .contact-orbit-mark { opacity: 0; }

@@ -10,6 +10,7 @@
   let token = '';
   let widgetId = null;
   let widgetSize = null;
+  let widgetTheme = null;
   let widgetObserver = null;
   let renderWidget = () => {};
   const syncButton = () => { button.disabled = sending || !token; };
@@ -31,15 +32,17 @@
     renderWidget = () => {
       try {
         const size = widget.clientWidth < 300 ? 'compact' : 'flexible';
-        if (sending || (widgetId !== null && size === widgetSize)) return;
+        const theme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+        if (sending || (widgetId !== null && size === widgetSize && theme === widgetTheme)) return;
         if (widgetId !== null) {
           clearVerification();
           window.turnstile.remove(widgetId);
         }
         widgetSize = size;
+        widgetTheme = theme;
         widgetId = window.turnstile.render(widget, {
           sitekey,
-          theme: 'dark',
+          theme,
           size,
           action: 'contact_message',
           callback: verifiedToken => {
@@ -57,6 +60,7 @@
     };
     script.onload = () => {
       renderWidget();
+      window.addEventListener('themechange', renderWidget);
       if ('ResizeObserver' in window) {
         widgetObserver = new ResizeObserver(renderWidget);
         widgetObserver.observe(widget);

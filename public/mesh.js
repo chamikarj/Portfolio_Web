@@ -50,8 +50,9 @@
 
   function draw() {
     ctx.clearRect(0, 0, width, height);
+    const light = document.documentElement.dataset.theme === 'light';
     ctx.lineWidth = .85;
-    ctx.strokeStyle = 'rgba(126, 195, 239, .11)';
+    ctx.strokeStyle = light ? 'rgba(43, 86, 134, .12)' : 'rgba(126, 195, 239, .11)';
     ctx.beginPath();
     for (let row = 0; row < rows; row += 1) {
       for (let col = 0; col < columns; col += 1) {
@@ -62,7 +63,7 @@
     }
     ctx.stroke();
 
-    ctx.strokeStyle = 'rgba(167, 145, 237, .075)';
+    ctx.strokeStyle = light ? 'rgba(91, 76, 145, .075)' : 'rgba(167, 145, 237, .075)';
     ctx.beginPath();
     for (let row = 0; row + 1 < rows; row += 1) {
       for (let col = 0; col + 1 < columns; col += 1) {
@@ -160,5 +161,6 @@
   addEventListener('resize', resize, { passive: true });
   document.addEventListener('mouseleave', leave);
   addEventListener('blur', leave);
+  window.addEventListener('themechange', start);
   resize();
 })();

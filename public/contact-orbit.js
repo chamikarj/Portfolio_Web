@@ -67,8 +67,11 @@
     }
   }
 
+  let lastPaint = 0;
   function animate(now) {
     if (!running) return;
+    if (now - lastPaint < 33) { frameId = requestAnimationFrame(animate); return; }
+    lastPaint = now;
     if (previousTime) elapsed += Math.min((now - previousTime) / 1000, .05);
     previousTime = now;
     draw();

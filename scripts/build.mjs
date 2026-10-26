@@ -1,0 +1,14 @@
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+const { build } = await import(process.env.ESBUILD_MODULE || 'esbuild');
+const root = resolve(import.meta.dirname, '..');
+process.chdir(root);
+await mkdir('lib', {recursive:true});
+const source = await readFile('src/portfolio-markup.ts','utf8');
+const markup = JSON.parse(source.split(' = ').slice(1).join(' = ').trim().replace(/;$/, ''));
+await build({entryPoints:['src/city-entry.tsx'],outdir:'public/city',entryNames:'city',chunkNames:'chunks/[name]-[hash]',bundle:true,splitting:true,format:'esm',platform:'browser',target:'es2022',jsx:'automatic',minify:true,define:{'process.env.NODE_ENV':'"production"'},logLevel:'info'});
+for (const name of ['message','youtube']) await build({entryPoints:[`src/${name}-entry.ts`],outfile:`api/${name}.js`,bundle:true,format:'esm',platform:'node',target:'node24',alias:{'@':resolve('src')},logLevel:'info'});
+const scripts = ['background-music','effects','scroll-reveal','academic-scroll','about-type','tools-ticker','video-title','channel-videos','hero-roles','contact-orbit','navigation','contact'];
+const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chamika rj — IT Support, QA &amp; Software</title><meta name="description" content="Chamika rj's portfolio: IT support, QA automation, software and content creation."><meta name="theme-color" content="#060c18"><link rel="icon" type="image/svg+xml" href="/favicon-theme.svg"><script src="/theme.js"></script><script src="/opening.js"></script><link rel="stylesheet" href="/styles.css"></head><body><div class="site-opening" aria-hidden="true"><div class="opening-content"><span class="opening-monogram">CR<span>.</span></span><span class="opening-name">CHAMIKA RJ</span><div class="opening-track"><span></span></div><span class="opening-caption">INITIALIZING PORTFOLIO</span></div></div>${markup}<div id="city-react-root"></div>${scripts.map(name=>`<script defer src="/${name}.js"></script>`).join('')}<script type="module" src="/city/city.js"></script></body></html>`;
+await writeFile('lib/homepage.html',html);
+console.log('Vercel-ready public assets and API functions updated.');
